@@ -1,1 +1,1 @@
-# Special-INC
+# Special-Inc
