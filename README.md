@@ -16,7 +16,7 @@ brug i andre programmer som zoom eller discord
 mulighed for at selv at vælge sprog
 
 ## API
-[google Speech-to-Text api](https://cloud.google.com/speech-to-text/)
+[One AI](https://studio.oneai.com/)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
