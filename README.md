@@ -1,9 +1,9 @@
 # Speech-to-Text kamera
-dette er et 6-ugers projekt lavet i h3.
+Dette er et projekt fra H3, der varer 6 uger.
 
-formålet ved opgaven er at man skal kunne tale til den hvor den så ved hjælp af One AI ville lave det om til text som så ses ved siden af kameraet.
+Projektets mål er at lave en enhed, man kan tale til. Den vil derefter omdanne tale til tekst ved hjælp af One AI. Teksten vil blive vist ved siden af kameraet. 
 
-vi ville også lave muligheden for at man kan vælge hvilken sprog den skal transcribe til
+Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes til
 
 ## Programmeringssprog
 C#
