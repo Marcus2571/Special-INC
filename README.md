@@ -14,7 +14,7 @@ Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes ti
 
 
 ## Programmeringssprog
-C#
+Python
 
 ## Funktions/Featues
 Aflytting af mikrofon eller lyd fra computeren
