@@ -6,11 +6,11 @@ Projektets mål er at lave en enhed, man kan tale til. Den vil derefter omdanne 
 Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes til
 
 ## installation
+install python 3.11.4 
 
-1. Install [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) or older 
-2. install .NET Multi-platform App UI Development in the Visual Studio installer
-3. Create a .NET Multi-platform App UI Development Projekt
-4. paste code in projekt
+### imports
+OpenCV ```pip install opencv-python ```
+PySimpleGUI ```pip install pysimplegui```
 
 
 ## Programmeringssprog
