@@ -1,19 +1,19 @@
-import oneai
-import base64
+import speech_recognition as sr
+r = sr.Recognizer()
 
-with open("<YOUR-FILE-PATH>", "rb") as f:
-  textParsed = base64.b64encode(f.read())
-oneai.api_key = "<YOUR-API-KEY-HERE>"
-pipeline = oneai.Pipeline(
-  steps = [
-		oneai.skills.Transcribe(
-  		speaker_detection=True,
-		),
-  ]
-)
+while True:  # Infinite loop to keep recording and recognizing
+        with sr.Microphone() as source:
+            print("Speak:")
+            try:
+                # Record the audio for a maximum of 5 seconds
+                audio = r.listen(source, timeout=5)
 
-conversation = oneai.Conversation(
-  textParsed
-)
-
-output = pipeline.run(conversation)
+                # Recognize the audio using Google's service
+                text = r.recognize_google(audio)
+                print("You said : {}".format(text))
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio")
+            except sr.RequestError as e:
+                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            except Exception as e:
+                print(f"An error occurred: {e}")
