@@ -7,9 +7,10 @@ Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes ti
 
 ## installation
 install python 3.11.4 
-
-### imports
+install code 
+### libarys
 OpenCV ```pip install opencv-python ```
+
 PySimpleGUI ```pip install pysimplegui```
 
 
