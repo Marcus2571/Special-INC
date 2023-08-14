@@ -9,14 +9,21 @@ from google.cloud import speech
 from settings import GOOGLE_SERVICE_JSON_FILE
 
 clients = {}
+config = {
+      "audio": {
+        "encoding": 'LINEAR16',
+        "sampleRateHertz": 16000,
+        "languageCode": "da-DK",
+      },
+      "interimResults": True
+    }
 
 
 class ClientData:
-    def __init__(self, transcribe_thread, conn, config: Dict):
+    def __init__(self, transcribe_thread, config: Dict):
         self._buff = queue.Queue()
         self._thread = transcribe_thread
         self._closed = True
-        self._conn = conn
         self.general_config = {dict_key: config[dict_key] for dict_key in config if dict_key != 'audio'}
         self.audio_config = config['audio']
 
@@ -60,6 +67,7 @@ class ClientData:
             yield b"".join(data)
 
     async def send_client_data(self, data, is_final: bool):
+        print(data)
         await self._conn.emit('speechData', {'data': data, 'isFinal': is_final})
 
 
@@ -128,9 +136,11 @@ class GoogleSpeechWrapper:
     async def start_listen(client_id: str):
         client = clients[client_id]
         speech_client = speech.SpeechClient.from_service_account_json(GOOGLE_SERVICE_JSON_FILE)
-        config = speech.RecognitionConfig(encoding=GoogleSpeechWrapper.encoding_map[client.audio_config['encoding']], sample_rate_hertz=client.audio_config['sampleRateHertz'],
-                                          language_code=client.audio_config['languageCode'], enable_automatic_punctuation=True)
-        streaming_config = speech.StreamingRecognitionConfig(config=config, interim_results=client.general_config['interimResults'])
+        # config = speech.RecognitionConfig(encoding=GoogleSpeechWrapper.encoding_map[client.audio_config['encoding']], sample_rate_hertz=client.audio_config['sampleRateHertz'],
+        #                                   language_code=client.audio_config['languageCode'], enable_automatic_punctuation=True)
+        config = speech.RecognitionConfig(encoding=GoogleSpeechWrapper.encoding_map["LINEAR16"], sample_rate_hertz="16000",
+                                          language_code="da_DK", enable_automatic_punctuation=True)
+        streaming_config = speech.StreamingRecognitionConfig(config=config, interim_results=True)
 
         audio_generator = client.generator()
         requests = (speech.StreamingRecognizeRequest(audio_content=content) for content in audio_generator)
@@ -142,9 +152,9 @@ class GoogleSpeechWrapper:
         # client._conn.emit('endGoogleCloudStream', '')
 
     @staticmethod
-    async def start_recognition_stream(sio, client_id: str, config: Dict):
+    async def start_recognition_stream(client_id: str, config: Dict):
         if client_id not in clients:
-            clients[client_id] = ClientData(threading.Thread(target=asyncio.run, args=(GoogleSpeechWrapper.start_listen(client_id),)), sio, config)
+            clients[client_id] = ClientData(threading.Thread(target=asyncio.run, args=(GoogleSpeechWrapper.start_listen(client_id),)), config)
             clients[client_id].start_transcribing()
         else:
             print('Warning - already running transcription for client')
