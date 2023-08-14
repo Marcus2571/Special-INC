@@ -3,12 +3,12 @@ Dette er et projekt fra H3, der varer 5 uger.
 
 Projektets mål er at lave en enhed, man kan tale til. Den vil derefter omdanne tale til tekst ved hjælp af One AI. Teksten vil blive vist ved siden af kameraet. 
 
-Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes til
+Derudover vil brugere kunne vælge, hvilket sprog teksten skal transskriberes til.
 
 ## installation
 install python 3.11.4 
 
-### libarys
+### Libaries
 OpenCV ```pip install opencv-python ```
 
 PySimpleGUI ```pip install pysimplegui```
@@ -22,7 +22,7 @@ Aflytting af mikrofon eller lyd fra computeren
 
 Text overlay til egen kamera.
 
-Brug i andre programmer som zoom eller discord
+Brug i andre programmer som Zoom eller Discord
 
 Mulighed for at selv at vælge sprog
 
