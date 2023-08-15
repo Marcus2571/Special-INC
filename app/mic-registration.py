@@ -1,5 +1,6 @@
 import pyaudio
 import wave
+import speech_recognition as sr
 
 from queue import Queue
 from threading import Thread
@@ -8,39 +9,60 @@ CHUNK = 1024
 AUDIO_FORMAT = pyaudio.paInt16
 CHANNELS = 1
 FRAME_RATE = 16000
-RECORD_SECONDS = 20
+RECORD_SECONDS = 3
+
+messages = Queue()
+recording = Queue()
+
+re = sr.Recognizer()
+
+def speech_recognition():
+    while not messages.empty():
+        frames = recording.get()
+        with wave.open('myfile.wav', 'wb') as wf:
+            wf.setnchannels(CHANNELS)
+            wf.setsampwidth(2)  # 2 bytes per sample for paInt16 format
+            wf.setframerate(FRAME_RATE)
+            wf.writeframes(b''.join(frames))
+
+        with sr.AudioFile("myfile.wav") as source:
+            audio_data = re.record(source)  # Load audio data
+
+        try:
+            text = re.recognize_google(audio_data, language="da-DK")
+            print("Transcription:", text)
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
-def start_recording(self):
+def record_mic():
     p = pyaudio.PyAudio()
-    IS_RECORDING = True
-    while IS_RECORDING:
-        self.stream = p.open(format=AUDIO_FORMAT,
-                        channels=CHANNELS,
-                        rate=FRAME_RATE,
-                        input=True,
-                        frames_per_buffer=CHUNK)
+    stream = p.open(format=AUDIO_FORMAT,
+                    channels=CHANNELS,
+                    rate=FRAME_RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
 
+    frames = []
 
-        print("* recording")
+    while not messages.empty():
+        data = stream.read(CHUNK)
+        frames.append(data)
+        if len(frames) >= (FRAME_RATE * RECORD_SECONDS) / CHUNK:
+            recording.put(frames.copy())
+            frames = []
 
-        frames = []
+def start_recording():
+    messages.put(True)
+    record = Thread(target=record_mic)
+    record.start()
+    print("recording startet")
+    transcribe = Thread(target=speech_recognition)
+    transcribe.start()
 
-        for i in range(0, int(FRAME_RATE / CHUNK * RECORD_SECONDS)):
-            data = self.stream.read(CHUNK)
-            frames.append(data)
-
-        print("* done recording")
-
-        self.stream.stop_stream()
-        self.stream.close()
-        p.terminate()
-
-        wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-
-def stop_recording(self):
-    IS_RECORDING = False
+try:
+    start_recording()
+except KeyboardInterrupt:
+    exit()
