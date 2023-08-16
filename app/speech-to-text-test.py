@@ -302,7 +302,7 @@ def main() -> None:
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=SAMPLE_RATE,
-        language_code="da-DK",
+        language_code="en-US",
         max_alternatives=1,
     )
 
