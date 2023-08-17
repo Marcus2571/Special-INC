@@ -3,7 +3,7 @@ class SpeechRecognitionHandler {
         this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         this.recognition.interimResults = true;
         this.recognition.continuous = true;
-        this.recognition.lang = "da-DK";
+        this.recognition.lang = "es-ES";
         this.listening = false;
         this.transcript = "";
 
@@ -34,10 +34,10 @@ class SpeechRecognitionHandler {
             let partialTranscript = "";
             let currentIndex = event.resultIndex;
             let transcript = event.results[currentIndex][0].transcript;
-            console.log(event);
             if (event.results[currentIndex].isFinal) {
                 this.transcript += transcript + " ";
                 document.getElementById("text").innerHTML = this.transcript;
+                translateTranscript(this.transcript, "es-ES", "da-DK");
             } else {
                 partialTranscript += transcript;
                 document.getElementById("text").innerHTML = this.transcript + partialTranscript;
@@ -45,24 +45,6 @@ class SpeechRecognitionHandler {
         };
 
     }
-
-    translateBtn.addEventListener("click", () => {
-        let text = fromText.value.trim(),
-        translateFrom = selectTag[0].value,
-        translateTo = selectTag[1].value;
-        if(!text) return;
-        toText.setAttribute("placeholder", "Translating...");
-        let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${translateFrom}|${translateTo}`;
-        fetch(apiUrl).then(res => res.json()).then(data => {
-            toText.value = data.responseData.translatedText;
-            data.matches.forEach(data => {
-                if(data.id === 0) {
-                    toText.value = data.translation;
-                }
-            });
-            toText.setAttribute("placeholder", "Translation");
-        });
-    });
 
     toggleListening() {
         this.listening = !this.listening;
@@ -74,5 +56,20 @@ class SpeechRecognitionHandler {
         }
     }
 }
+
+function translateTranscript(text, langFrom, langTo) {
+    let toText = document.getElementById("toText");
+    let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${langFrom}|${langTo}`;
+    console.log("hit");
+    fetch(apiUrl).then(res => res.json()).then(data => {
+        toText.innerHTML = data.responseData.translatedText;
+        data.matches.forEach(data => {
+            if(data.id === 0) {
+                console.log(data.translation);
+                toText.innerHTML = data.translation;
+            }
+        });
+    });
+};
 
 const speechHandler = new SpeechRecognitionHandler();
