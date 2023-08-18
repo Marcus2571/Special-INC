@@ -12,12 +12,14 @@
 
 #text {
     position: absolute;
-    top: 85%;
+    top: 90%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     font-size: 30px;
     font-weight: bold;
+    background-color: rgba(45, 45, 45, .5);
+    
   }
 
 
