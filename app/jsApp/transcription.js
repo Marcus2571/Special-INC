@@ -12,22 +12,25 @@ class SpeechRecognitionHandler {
         this.recognition.onstart = () => {
             console.log("Starting listening, speak into the microphone");
             this.handleSpeechEvent();
+            document.getElementById("startButton").innerHTML = "Stop listening";
         };
 
         this.recognition.onend = () => {
             console.log(this.listening ? "Continue listening" : "Stopped listening");
             if (this.listening) {
                 this.recognition.start();
+            } else {
+                document.getElementById("startButton").innerHTML = "Start listening";
             }
         };
 
         this.recognition.onnomatch = () => {
-            console.log("I found no match")
+            console.log("I found no match");
             this.recognition.stop();
         }
 
         this.recognition.onerror = () => {
-            console.log("I died")
+            console.log("I died");
         }
     }
 
@@ -37,13 +40,12 @@ class SpeechRecognitionHandler {
             let currentIndex = event.resultIndex;
             let transcript = event.results[currentIndex][0].transcript;
             if (event.results[currentIndex].isFinal) {
-                this.transcript += transcript + " ";
+                this.transcript = transcript + " ";
                 document.getElementById("text").innerHTML = this.transcript;
-                translateTranscript(this.transcript, this.spokenLang, this.translateLang, true);
+                translateTranscript(this.transcript, this.spokenLang, this.translateLang);
             } else {
                 partialTranscript += transcript;
                 document.getElementById("text").innerHTML = this.transcript + partialTranscript;
-                translateTranscript(partialTranscript, this.spokenLang, this.translateLang, false);
             }
         };
 
@@ -60,18 +62,18 @@ class SpeechRecognitionHandler {
     }
 }
 
-function translateTranscript(text, langFrom, langTo, isFinal) {
-    let toText = document.getElementById("toText");
+function translateTranscript(text, langFrom, langTo) {
+    if (langFrom === langTo) {
+        return;
+    }
+    let toText = document.getElementById("text");
     let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${langFrom}|${langTo}`;
+    console.log(langFrom, langTo);
     fetch(apiUrl).then(res => res.json()).then(data => {
         toText.innerHTML = data.responseData.translatedText;
         data.matches.forEach(data => {
             if(data.id === 0) {
-                if (isFinal) {
-                    toText.innerHTML = data.translation;
-                } else {
-                    toText.innerHTML += data.translation;
-                }
+                toText.innerHTML = data.translation;
             }
         });
     });
