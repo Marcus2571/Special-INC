@@ -1,9 +1,11 @@
 class SpeechRecognitionHandler {
     constructor() {
+        this.translateLang = document.getElementById('LanguageTranslate').value;
+        this.spokenLang = document.getElementById('LanguageSpoken').value;
         this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         this.recognition.interimResults = true;
         this.recognition.continuous = true;
-        this.recognition.lang = "es-ES";
+        this.recognition.lang = this.spokenLang;
         this.listening = false;
         this.transcript = "";
 
@@ -37,10 +39,11 @@ class SpeechRecognitionHandler {
             if (event.results[currentIndex].isFinal) {
                 this.transcript += transcript + " ";
                 document.getElementById("text").innerHTML = this.transcript;
-                translateTranscript(this.transcript, "es-ES", "da-DK");
+                translateTranscript(this.transcript, this.spokenLang, this.translateLang, true);
             } else {
                 partialTranscript += transcript;
                 document.getElementById("text").innerHTML = this.transcript + partialTranscript;
+                translateTranscript(partialTranscript, this.spokenLang, this.translateLang, false);
             }
         };
 
@@ -57,19 +60,28 @@ class SpeechRecognitionHandler {
     }
 }
 
-function translateTranscript(text, langFrom, langTo) {
+function translateTranscript(text, langFrom, langTo, isFinal) {
     let toText = document.getElementById("toText");
     let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${langFrom}|${langTo}`;
-    console.log("hit");
     fetch(apiUrl).then(res => res.json()).then(data => {
         toText.innerHTML = data.responseData.translatedText;
         data.matches.forEach(data => {
             if(data.id === 0) {
-                console.log(data.translation);
-                toText.innerHTML = data.translation;
+                if (isFinal) {
+                    toText.innerHTML = data.translation;
+                } else {
+                    toText.innerHTML += data.translation;
+                }
             }
         });
     });
 };
 
-const speechHandler = new SpeechRecognitionHandler();
+let speechHandler = null;
+
+function startSpeechRecognition() {
+    if (!speechHandler) {
+        speechHandler = new SpeechRecognitionHandler();
+    }
+    speechHandler.toggleListening();
+}
