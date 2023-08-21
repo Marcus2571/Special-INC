@@ -22,6 +22,7 @@ class SpeechRecognitionHandler {
             } else {
                 document.getElementById("startButton").innerHTML = "Start listening";
                 document.getElementById("text").innerHTML = "";
+                this.transcript = "";
             }
         };
 

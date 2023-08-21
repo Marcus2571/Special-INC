@@ -8,7 +8,11 @@
     <script src="transcription.js"></script>
 </head>
 <body>
-    <button id="startButton" onclick="startSpeechRecognition()">Start listening</button>
+    <div class="videodiv">
+        <div id="text"></div>
+        <video id="vid"></video>
+    </div>
+    
     <div id="translation">
         <div class="shit">
             
@@ -22,11 +26,9 @@
             <select name="LanguageTranslate" id="LanguageTranslate">
             </select>   
         </div>
-        <div class="videodiv">
-            <div id="text"></div>
-            <video id="vid"></video>
-        </div>
+        <button id="startButton" onclick="startSpeechRecognition()">Start listening</button>
     </div>
+    
     <script src="index.js"></script>
 </body>
 </html>
