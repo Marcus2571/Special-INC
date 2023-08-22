@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +9,36 @@
     <script src="transcription.js"></script>
     <script src="//sdk.twilio.com/js/video/releases/2.17.1/twilio-video.min.js"></script>
 </head>
+
 <body>
     <div class="videodiv">
         <div id="text"></div>
         <video id="vid"></video>
     </div>
-    
+
     <div id="translation">
-        <div class="shit">
-            
+        <div>
             <label for="LanguageSpoken">Choose the language you are speaking:</label>
             <select name="LanguageSpoken" id="LanguageSpoken">
             </select>
+
+            <input type="checkbox">
+            <label for="DisplaySameLanguage">Display Speaking language</label>
         </div>
-        
-        <div class="shit">
+
+        <div>
+
+        </div>
+
+        <div>
             <label for="LanguageTranslate">Choose the language you want to translate to:</label>
             <select name="LanguageTranslate" id="LanguageTranslate">
-            </select>   
+            </select>
         </div>
         <button id="startButton" onclick="startSpeechRecognition()">Start listening</button>
     </div>
-    
+
     <script src="index.js"></script>
 </body>
+
 </html>
